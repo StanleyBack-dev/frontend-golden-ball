@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    background-color: #07070a;
+    /* Soft gold and ember glows behind the hero; fixed so they don't scroll. */
+    background-image:
+      radial-gradient(
+        60rem 30rem at 15% -10%,
+        rgba(233, 185, 73, 0.14),
+        transparent 60%
+      ),
+      radial-gradient(
+        50rem 28rem at 95% 0%,
+        rgba(249, 115, 22, 0.1),
+        transparent 60%
+      );
+    background-attachment: fixed;
+    color: #f4f4f5;
+    overflow-x: hidden;
+    font-family:
+      "Inter Variable",
+      "Inter",
+      system-ui,
+      -apple-system,
+      "Segoe UI",
+      Roboto,
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  ::selection {
+    background: rgba(233, 185, 73, 0.35);
+  }
+
+  select option {
+    background: #18181f;
+    color: #f4f4f5;
+  }
+}
+
+@layer components {
+  /* Raised dark surface used by every card on the page. */
+  .card {
+    @apply rounded-2xl border border-white/[0.08] bg-ink-900/80 shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset] backdrop-blur;
+  }
+
+  .section-title {
+    @apply font-display text-sm font-medium uppercase tracking-[0.2em] text-gold-300;
+  }
+
+  .text-gold-gradient {
+    @apply bg-gold-gradient bg-clip-text text-transparent;
+  }
+
+  .btn-primary {
+    @apply flex w-full items-center justify-center gap-2 rounded-xl bg-gold-gradient px-5 py-3.5 font-display text-base font-semibold uppercase tracking-wider text-ink-950 shadow-glow transition hover:brightness-110 disabled:cursor-not-allowed disabled:bg-none disabled:bg-ink-700 disabled:text-zinc-500 disabled:shadow-none;
+  }
+
+  .field {
+    @apply w-full rounded-lg border border-white/10 bg-ink-800 px-3 py-2.5 text-base text-white placeholder-zinc-500 outline-none transition focus:border-gold-400 focus:ring-2 focus:ring-gold-400/20 disabled:opacity-60;
+  }
+}
