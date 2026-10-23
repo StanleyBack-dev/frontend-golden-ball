@@ -30,7 +30,6 @@ import {
 import { copyText } from "../../../shared/utils/clipboard";
 
 export interface VoteReceipt {
-  state: string;
   votedAt: string;
   /** The vote, when known (right after voting, or remembered by this device). */
   choice: ReceiptChoice | null;
@@ -60,7 +59,6 @@ export default function ReceiptModal({ receipt, onClose }: ReceiptModalProps) {
     setBlob(null);
 
     renderReceiptImage({
-      state: receipt.state,
       votedAt: receipt.votedAt,
       choice,
       siteHost: window.location.host,
@@ -77,7 +75,7 @@ export default function ReceiptModal({ receipt, onClose }: ReceiptModalProps) {
     return () => {
       cancelled = true;
     };
-  }, [receipt.state, receipt.votedAt, choice, showError]);
+  }, [receipt.votedAt, choice, showError]);
 
   // Frees each preview URL once it's replaced or the modal closes.
   useEffect(

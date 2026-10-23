@@ -25,8 +25,8 @@ export default function Hero({ results, votingOpen, onDeadline }: HeroProps) {
         </h1>
         <p className="mt-6 max-w-xl text-base leading-relaxed text-zinc-400 sm:text-lg">
           Escolha entre os 30 indicados ao prêmio de melhor jogador do mundo,
-          confirme com sua conta Google e acompanhe o ranking ao vivo, estado
-          por estado.
+          confirme com sua conta Google, acompanhe o ranking ao vivo e compare a
+          temporada de cada jogador.
         </p>
 
         <div className="mt-8 flex flex-wrap items-center gap-3">

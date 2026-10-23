@@ -10,7 +10,6 @@ import {
 import type { Voter } from "../../../api/auth";
 import { castVote, type Candidate } from "../../../api/poll";
 import { getHttpErrorCode, getHttpErrorMessage } from "../../../api/http-error";
-import { BRAZILIAN_STATE_OPTIONS } from "../../../shared/constants/brazilian-states";
 import { useToast } from "../../../shared/toast";
 import GoogleSignInButton from "../../auth/components/GoogleSignInButton";
 import { useVoterSession } from "../../auth/hooks/useVoterSession";
@@ -32,7 +31,7 @@ const RECEIPT_STORAGE_KEY = "bolaDeOuro2026:receipt";
  * anywhere — and holds the chosen nominee's slug (e.g. "vinicius-junior")
  * so the voter can show their vote again; they can still hide it.
  */
-type StoredReceipt = Pick<VoteReceipt, "state" | "votedAt"> & {
+type StoredReceipt = Pick<VoteReceipt, "votedAt"> & {
   choiceSlug?: string;
 };
 
@@ -40,14 +39,10 @@ function readStoredReceipt(): StoredReceipt | null {
   try {
     const raw = window.localStorage.getItem(RECEIPT_STORAGE_KEY);
     const parsed = raw ? (JSON.parse(raw) as Partial<StoredReceipt>) : null;
-    if (
-      typeof parsed?.state !== "string" ||
-      typeof parsed.votedAt !== "string"
-    ) {
+    if (typeof parsed?.votedAt !== "string") {
       return null;
     }
     return {
-      state: parsed.state,
       votedAt: parsed.votedAt,
       choiceSlug:
         typeof parsed.choiceSlug === "string" &&
@@ -102,7 +97,6 @@ export default function VoteForm({
   const { voter } = session;
 
   const [candidateSlug, setCandidateSlug] = useState("");
-  const [state, setState] = useState("");
   const [consent, setConsent] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -115,7 +109,6 @@ export default function VoteForm({
   // What still blocks the vote, in the order the form asks for it.
   const missingSteps = [
     !candidateSlug && "escolha um jogador",
-    !state && "selecione o estado",
     !consent && "aceite o aviso de privacidade",
     !captchaReady && "conclua a verificação anti-robô",
   ].filter((step): step is string => Boolean(step));
@@ -149,21 +142,18 @@ export default function VoteForm({
     try {
       const response = await castVote({
         candidateSlug,
-        state,
         privacyConsent: true,
         captchaToken: captchaToken ?? undefined,
       });
 
       writeVotedFlag();
       const receipt: StoredReceipt = {
-        state: response.data.state,
         votedAt: response.data.votedAt,
         choiceSlug: candidateSlug,
       };
       storeReceipt(receipt);
       setStoredReceipt(receipt);
       setOpenReceipt({
-        state: receipt.state,
         votedAt: receipt.votedAt,
         choice: toReceiptChoice(candidateSlug, candidates),
       });
@@ -225,7 +215,6 @@ export default function VoteForm({
             type="button"
             onClick={() =>
               setOpenReceipt({
-                state: storedReceipt.state,
                 votedAt: storedReceipt.votedAt,
                 choice: storedReceipt.choiceSlug
                   ? toReceiptChoice(storedReceipt.choiceSlug, candidates)
@@ -276,25 +265,6 @@ export default function VoteForm({
         )}
 
         <div className="mt-5 space-y-5">
-          <label className="block max-w-sm">
-            <span className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-zinc-400">
-              Seu estado
-            </span>
-            <select
-              value={state}
-              onChange={(e) => setState(e.target.value)}
-              className="field"
-              required
-            >
-              <option value="">Selecione</option>
-              {BRAZILIAN_STATE_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.value} — {option.label}
-                </option>
-              ))}
-            </select>
-          </label>
-
           <label className="flex items-start gap-3 text-sm text-zinc-300">
             <input
               type="checkbox"

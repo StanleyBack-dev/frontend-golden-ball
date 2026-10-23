@@ -1,3 +1,6 @@
+/** Official time of the poll (Brasília has no daylight saving time). */
+export const BRASILIA_TIME_ZONE = "America/Sao_Paulo";
+
 /** "17:00" for `instant` as seen on a wall clock in `timeZone`. */
 export function formatTimeInZone(instant: Date, timeZone?: string): string {
   return new Intl.DateTimeFormat("pt-BR", {

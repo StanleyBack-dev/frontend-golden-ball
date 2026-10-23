@@ -4,6 +4,7 @@ import { ToastProvider } from "./shared/toast/ToastProvider";
 import { usePollResults } from "./features/poll/hooks/usePollResults";
 import ResultsSummary from "./features/poll/components/ResultsSummary";
 import AnalyticsSection from "./features/analytics/components/AnalyticsSection";
+import PlayerStatsSection from "./features/player-stats/components/PlayerStatsSection";
 import VoteForm from "./features/poll/components/VoteForm";
 import Hero from "./features/poll/components/Hero";
 import BallMark from "./components/brand/BallMark";
@@ -12,6 +13,7 @@ import PhotoCredits from "./components/brand/PhotoCredits";
 const NAV_LINKS = [
   { href: "#ranking", label: "Ranking" },
   { href: "#votar", label: "Votar" },
+  { href: "#estatisticas", label: "Estatísticas" },
   { href: "#analise", label: "Análise" },
 ];
 
@@ -133,6 +135,10 @@ function PollPage() {
               />
             </section>
           )}
+
+          <div id="estatisticas" className="scroll-mt-20">
+            <PlayerStatsSection />
+          </div>
 
           {results && (
             <div id="analise" className="scroll-mt-20">

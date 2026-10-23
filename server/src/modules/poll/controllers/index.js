@@ -18,18 +18,14 @@ function requestContext(req) {
 function pickVoteInput(body) {
   const input = {
     candidateSlug: body?.candidateSlug,
-    state: body?.state,
     privacyConsent: body?.privacyConsent,
     captchaToken: body?.captchaToken || undefined,
   };
 
   const isValid =
-    ["candidateSlug", "state"].every(
-      (field) =>
-        typeof input[field] === "string" &&
-        input[field].length > 0 &&
-        input[field].length <= 40,
-    ) &&
+    typeof input.candidateSlug === "string" &&
+    input.candidateSlug.length > 0 &&
+    input.candidateSlug.length <= 40 &&
     input.privacyConsent === true &&
     (input.captchaToken === undefined ||
       (typeof input.captchaToken === "string" &&

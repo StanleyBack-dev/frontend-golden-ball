@@ -1,8 +1,6 @@
 import type { ReceiptChoice } from "./receipt-choice";
-import { BRAZILIAN_STATE_NAMES } from "../../../shared/constants/brazilian-states";
 
 export interface ReceiptData {
-  state: string;
   /** Server timestamp of the vote (ISO 8601). */
   votedAt: string;
   /** Only present when the voter chose to reveal their vote. */
@@ -129,7 +127,7 @@ const dateFormatter = new Intl.DateTimeFormat("pt-BR", {
 
 /**
  * Renders the shareable receipt as a PNG. Contains no personal data (nothing from
- * the Google account) — only the state, the time and, if the voter opted in,
+ * the Google account) — only the time and, if the voter opted in,
  * the nominee they voted for.
  */
 export async function renderReceiptImage(data: ReceiptData): Promise<Blob> {
@@ -252,10 +250,9 @@ export async function renderReceiptImage(data: ReceiptData): Promise<Blob> {
   ctx.lineTo(cardX + cardW - 70, cardY + 680);
   ctx.stroke();
 
-  const stateName = BRAZILIAN_STATE_NAMES[data.state] ?? data.state;
   ctx.fillStyle = INK;
   ctx.font = `600 38px ${FONT}`;
-  ctx.fillText(`${stateName} (${data.state})`, centerX, cardY + 740);
+  ctx.fillText("Bola de Ouro 2026 · Enquete popular", centerX, cardY + 740);
   ctx.fillStyle = MUTED;
   ctx.font = `500 32px ${FONT}`;
   ctx.fillText(
