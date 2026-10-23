@@ -30,15 +30,23 @@ As 30 fotos em `public/players/` vêm da [Wikimedia Commons](https://commons.wik
 
 ## Endpoints do BFF
 
-| Método | Rota                   | Descrição                                  |
-| ------ | ---------------------- | ------------------------------------------ |
-| GET    | `/api/poll/candidates` | Os 30 indicados (cache de CDN de 1h)       |
-| GET    | `/api/poll/results`    | Totais, % e votos por estado (cache de 5s) |
-| GET    | `/api/poll/analytics`  | Análise com filtros (cache de 10s)         |
-| GET    | `/api/auth/me`         | Quem está logado e se já votou             |
-| POST   | `/api/auth/google`     | Login com a credencial do Google           |
-| POST   | `/api/auth/logout`     | Sai (apaga o cookie de sessão)             |
-| POST   | `/api/poll/votes`      | Registra o voto da conta logada            |
+| Método | Rota                        | Descrição                                                                     |
+| ------ | --------------------------- | ----------------------------------------------------------------------------- |
+| GET    | `/api/poll/candidates`      | Os 30 indicados (cache de CDN de 1h)                                          |
+| GET    | `/api/poll/results`         | Totais e % por indicado (cache de 5s)                                         |
+| GET    | `/api/poll/analytics`       | Análise por período (cache de 10s)                                            |
+| GET    | `/api/stats/leaderboard`    | Estatísticas dos 30 indicados, com filtros (cache de CDN de 30 min)           |
+| GET    | `/api/stats/nominees/:slug` | Temporada de um indicado: competições, times e jogos (cache de CDN de 30 min) |
+| GET    | `/api/auth/me`              | Quem está logado e se já votou                                                |
+| POST   | `/api/auth/google`          | Login com a credencial do Google                                              |
+| POST   | `/api/auth/logout`          | Sai (apaga o cookie de sessão)                                                |
+| POST   | `/api/poll/votes`           | Registra o voto da conta logada                                               |
+
+## Estatísticas dos indicados
+
+A seção "Números da temporada" compara os 30 indicados (gols, assistências, jogos, minutos, por 90 minutos e nota média) com filtros por recorte (clubes, ligas, copas, continentais, seleção), competição, posição e minutagem. Ao clicar num jogador, abre a temporada completa: por competição, por time e jogo a jogo na Copa do Mundo 2026. Os filtros ficam na URL, então o link pode ser compartilhado.
+
+Os números cobrem a janela da Bola de Ouro (temporada 25/26 dos clubes + Copa do Mundo 2026), já encerrada: o backend completa a carga uma vez e depois não consulta mais o provedor. O BFF só repassa os dados.
 
 ## Votação com Google
 
@@ -53,7 +61,7 @@ Depois de votar, o site gera no navegador uma imagem 1080×1920 (formato Stories
 - **Voto visível por padrão**, com opção de esconder antes de compartilhar.
 - **"Postar nos Stories":** abre o compartilhamento nativo do celular com a imagem anexada. Sites não podem postar direto nos Stories; isso é exclusivo de apps nativos.
 - **WhatsApp, Telegram, X e Facebook:** no celular, enviam a imagem com um texto com emojis como legenda. No computador, abrem o link do app; a imagem chega pela prévia do link.
-- **Privacidade:** nenhum dado da conta Google aparece. Para reabrir o comprovante, o navegador guarda localmente estado, horário e opção escolhida; nada disso vai para o servidor.
+- **Privacidade:** nenhum dado da conta Google aparece. Para reabrir o comprovante, o navegador guarda localmente horário e opção escolhida; nada disso vai para o servidor.
 
 ### Prévia do link (Open Graph)
 

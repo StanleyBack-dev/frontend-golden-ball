@@ -25,24 +25,17 @@ export interface CandidateResult extends Candidate {
   percentage: number;
 }
 
-export interface StateResult extends VoteCounts {
-  state: string;
-  candidates: Array<{ slug: string; votes: number; percentage: number }>;
-}
-
 export interface PollResults extends VoteCounts {
   votingOpen: boolean;
-  /** Official closing instant (ISO 8601), the same for every state. */
+  /** Official closing instant (ISO 8601). */
   votingClosesAt: string;
   updatedAt: string;
   candidates: CandidateResult[];
-  states: StateResult[];
 }
 
 /** The voter is identified by the Google session cookie, not the payload. */
 export interface CastVotePayload {
   candidateSlug: string;
-  state: string;
   privacyConsent: true;
   captchaToken?: string;
 }
@@ -50,51 +43,16 @@ export interface CastVotePayload {
 export interface CastVoteResult {
   registered: boolean;
   candidateSlug: string;
-  state: string;
   /** When the vote was recorded, per the server (ISO 8601). */
   votedAt: string;
 }
 
-export type BrazilianRegion =
-  "NORTE" | "NORDESTE" | "CENTRO_OESTE" | "SUDESTE" | "SUL";
-export type StateSortField =
-  "TOTAL_VOTES" | "STATE" | "MARGIN" | "CANDIDATE_SHARE";
-export type SortOrder = "ASC" | "DESC";
+export type TimelineGranularity = "HOUR" | "DAY";
 
 export interface AnalyticsFilter {
-  region?: BrazilianRegion;
-  states?: string[];
   from?: string;
   to?: string;
-  leader?: string;
-  minVotes?: number;
-  sortBy?: StateSortField;
-  sortCandidate?: string;
-  order?: SortOrder;
-}
-
-export interface CandidateShare {
-  slug: string;
-  votes: number;
-  percentage: number;
-}
-
-export interface StateAnalytics extends VoteCounts {
-  state: string;
-  region: BrazilianRegion;
-  shareOfSlice: number;
-  candidates: CandidateShare[];
-  leaderSlug: string | null;
-  marginVotes: number;
-  marginPoints: number;
-}
-
-export interface RegionAnalytics extends VoteCounts {
-  region: BrazilianRegion;
-  label: string;
-  candidates: CandidateShare[];
-  leaderSlug: string | null;
-  marginPoints: number;
+  granularity?: TimelineGranularity;
 }
 
 export interface TimelinePoint {
@@ -111,19 +69,17 @@ export interface TimelinePoint {
 
 export interface PollAnalytics {
   summary: VoteCounts & {
-    nationalVotes: number;
-    shareOfNational: number;
+    /** Votes since the poll opened, whatever the period. */
+    overallVotes: number;
+    shareOfOverall: number;
     leaderSlug: string | null;
     marginVotes: number;
     marginPoints: number;
-    statesWon: Array<{ slug: string; states: number }>;
-    tiedStates: number;
-    statesWithoutVotes: number;
+    nomineesWithVotes: number;
   };
+  /** Votes and shares within the period. */
   candidates: CandidateResult[];
-  regions: RegionAnalytics[];
-  states: StateAnalytics[];
-  granularity: "HOUR" | "DAY";
+  granularity: TimelineGranularity;
   timeline: TimelinePoint[];
   updatedAt: string;
 }
@@ -149,7 +105,7 @@ export async function getPollAnalytics(
   const params = new URLSearchParams();
   for (const [key, value] of Object.entries(filter)) {
     if (value === undefined || value === "") continue;
-    params.set(key, Array.isArray(value) ? value.join(",") : String(value));
+    params.set(key, String(value));
   }
   const query = params.toString();
 

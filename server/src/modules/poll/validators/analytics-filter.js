@@ -1,26 +1,10 @@
 import { HttpError } from "../../../shared/http/http-error.js";
 
-const REGIONS = ["NORTE", "NORDESTE", "CENTRO_OESTE", "SUDESTE", "SUL"];
-const SORT_FIELDS = ["TOTAL_VOTES", "STATE", "MARGIN", "CANDIDATE_SHARE"];
-const ORDERS = ["ASC", "DESC"];
 const GRANULARITIES = ["HOUR", "DAY"];
-const UF = /^[A-Z]{2}$/;
-const SLUG = /^[a-z0-9-]{1,40}$/;
 const ISO_INSTANT =
   /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:\d{2})$/;
 
-const ALLOWED_PARAMS = new Set([
-  "region",
-  "states",
-  "from",
-  "to",
-  "leader",
-  "minVotes",
-  "sortBy",
-  "sortCandidate",
-  "order",
-  "granularity",
-]);
+const ALLOWED_PARAMS = new Set(["from", "to", "granularity"]);
 
 function single(query, key) {
   const value = query[key];
@@ -59,24 +43,9 @@ export function parseAnalyticsFilter(query) {
     }
   }
 
-  const statesParam = single(query, "states");
-  const states = statesParam ? statesParam.split(",") : undefined;
-  if (states && (states.length > 27 || !states.every((uf) => UF.test(uf)))) {
-    throw new HttpError(400, 'Parâmetro "states" inválido.');
-  }
-
-  const minVotesParam = matching(query, "minVotes", /^\d{1,9}$/);
-
   const filter = {
-    region: oneOf(query, "region", REGIONS),
-    states,
     from: matching(query, "from", ISO_INSTANT),
     to: matching(query, "to", ISO_INSTANT),
-    leaderSlug: matching(query, "leader", SLUG),
-    minVotes: minVotesParam ? Number(minVotesParam) : undefined,
-    sortBy: oneOf(query, "sortBy", SORT_FIELDS),
-    sortCandidateSlug: matching(query, "sortCandidate", SLUG),
-    order: oneOf(query, "order", ORDERS),
     granularity: oneOf(query, "granularity", GRANULARITIES),
   };
 

@@ -17,3 +17,18 @@ export const formatTime = (iso: string) => timeFormatter.format(new Date(iso));
 /** "1 voto" / "2 votos". */
 export const formatVotes = (value: number) =>
   `${integerFormatter.format(value)} ${value === 1 ? "voto" : "votos"}`;
+
+const decimalFormatters = new Map<number, Intl.NumberFormat>();
+
+/** pt-BR number with a fixed number of decimals ("1,07"). */
+export function formatDecimal(value: number, digits = 2): string {
+  let formatter = decimalFormatters.get(digits);
+  if (!formatter) {
+    formatter = new Intl.NumberFormat("pt-BR", {
+      minimumFractionDigits: digits,
+      maximumFractionDigits: digits,
+    });
+    decimalFormatters.set(digits, formatter);
+  }
+  return formatter.format(value);
+}

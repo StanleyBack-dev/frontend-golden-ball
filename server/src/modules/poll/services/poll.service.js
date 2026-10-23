@@ -45,15 +45,6 @@ export class PollService {
               votes
               percentage
             }
-            states {
-              state
-              totalVotes
-              candidates {
-                slug
-                votes
-                percentage
-              }
-            }
           }
         }
       }
@@ -73,37 +64,17 @@ export class PollService {
           data {
             summary {
               totalVotes
-              nationalVotes
-              shareOfNational
+              overallVotes
+              shareOfOverall
               leaderSlug
               marginVotes
               marginPoints
-              statesWon { slug states }
-              tiedStates
-              statesWithoutVotes
+              nomineesWithVotes
             }
             candidates {
               ${CANDIDATE_FIELDS}
               votes
               percentage
-            }
-            regions {
-              region
-              label
-              totalVotes
-              leaderSlug
-              marginPoints
-              candidates { slug votes percentage }
-            }
-            states {
-              state
-              region
-              totalVotes
-              shareOfSlice
-              leaderSlug
-              marginVotes
-              marginPoints
-              candidates { slug votes percentage }
             }
             granularity
             timeline {
@@ -137,7 +108,6 @@ export class PollService {
           data {
             registered
             candidateSlug
-            state
             votedAt
           }
         }

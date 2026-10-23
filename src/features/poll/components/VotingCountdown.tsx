@@ -1,12 +1,7 @@
-import { useMemo, useState } from "react";
-import { ChevronDown, Clock } from "lucide-react";
-import { BRAZILIAN_STATE_OPTIONS } from "../../../shared/constants/brazilian-states";
+import { useMemo } from "react";
+import { Clock } from "lucide-react";
 import {
   BRASILIA_TIME_ZONE,
-  STATE_TIME_ZONES,
-  TIME_ZONE_EXCEPTIONS,
-} from "../../../shared/constants/brazilian-time-zones";
-import {
   deviceTimeZone,
   formatDayInZone,
   formatTimeInZone,
@@ -14,7 +9,7 @@ import {
 import { useCountdown } from "../hooks/useCountdown";
 
 interface VotingCountdownProps {
-  /** Official closing instant (ISO 8601) — the same moment for every state. */
+  /** Official closing instant (ISO 8601). */
   closesAt: string;
   votingOpen: boolean;
   onExpire: () => void;
@@ -32,8 +27,6 @@ export default function VotingCountdown({
     deadline,
     onExpire,
   );
-  const [expanded, setExpanded] = useState(false);
-  const [state, setState] = useState("");
 
   const brasiliaTime = formatTimeInZone(deadline, BRASILIA_TIME_ZONE);
   const brasiliaDay = formatDayInZone(deadline, BRASILIA_TIME_ZONE);
@@ -89,67 +82,6 @@ export default function VotingCountdown({
           <> · {deviceTime} no seu horário</>
         )}
       </p>
-
-      <button
-        type="button"
-        onClick={() => setExpanded((value) => !value)}
-        aria-expanded={expanded}
-        className="mt-2 flex items-center gap-1 text-xs font-medium text-gold-300 hover:text-gold-200"
-      >
-        Ver horário no meu estado
-        <ChevronDown
-          className={`h-3.5 w-3.5 transition-transform ${expanded ? "rotate-180" : ""}`}
-          aria-hidden
-        />
-      </button>
-
-      {expanded && (
-        <div className="mt-3 space-y-3 border-t border-white/10 pt-3 text-xs text-zinc-400">
-          <p>
-            A votação termina{" "}
-            <strong className="text-white">no mesmo instante</strong> em todo o
-            país, no dia da cerimônia da Bola de Ouro, por isso o cronômetro é
-            igual para todos. Só muda a hora local:
-          </p>
-
-          <label className="block">
-            <span className="sr-only">Seu estado</span>
-            <select
-              value={state}
-              onChange={(e) => setState(e.target.value)}
-              className="w-full rounded-lg border border-white/10 bg-ink-800 px-2.5 py-2 text-sm text-white outline-none focus:border-gold-400"
-            >
-              <option value="">Selecione seu estado</option>
-              {BRAZILIAN_STATE_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.value} — {option.label}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          {state && (
-            <p className="rounded-lg bg-ink-800 px-3 py-2 text-sm text-white">
-              Em {state}, a votação encerra às{" "}
-              <strong className="tabular-nums">
-                {formatTimeInZone(deadline, STATE_TIME_ZONES[state])}
-              </strong>{" "}
-              (hora local).
-            </p>
-          )}
-
-          <ul className="space-y-0.5">
-            {TIME_ZONE_EXCEPTIONS.map((exception) => (
-              <li key={exception.zone}>
-                {exception.label}:{" "}
-                <span className="font-semibold text-white tabular-nums">
-                  {formatTimeInZone(deadline, exception.zone)}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
     </div>
   );
 }

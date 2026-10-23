@@ -35,7 +35,7 @@ export function shareText(
     voteLine(choice),
     "",
     "👉 E você, já votou? Leva menos de 1 minuto ⏱️",
-    "📊 Acompanhe o ranking ao vivo, estado por estado:",
+    "📊 Acompanhe o ranking ao vivo e as estatísticas dos indicados:",
   ].join("\n");
 
   return network === "whatsapp" ? text : text.replace(/\*/g, "");
